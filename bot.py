@@ -10,20 +10,26 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 # ==========================================
 BOT_TOKEN = "8540132298:AAESYBJhh9o3fO1BGwGjz76-xSBh6dBNN18" 
 BOT_USERNAME = "NS_LINK_SHARE_BOT" 
-OWNER_ID = 5524906942 
-
-# --- PRIVATE CHANNEL DETAILS ---
-FORCE_SUB_CHANNEL_ID = -1002548609196 
-FORCE_SUB_LINK = "https://t.me/+-FbPhX9Xm800NjA1" 
-
-bot = telebot.TeleBot(BOT_TOKEN)
-
+OWNER_IDS = [5524906942, 8483875806] # Yahan comma lagakar kitni bhi IDs daal de
 # ==========================================
 #  DATABASE SETUP (SQLite)
 # ==========================================
 conn = sqlite3.connect('bot_database.db', check_same_thread=False)
 cursor = conn.cursor()
 
+# 1. Pehle saari tables create kar
+cursor.execute('''CREATE TABLE IF NOT EXISTS admins (user_id INTEGER PRIMARY KEY)''')
+cursor.execute('''CREATE TABLE IF NOT EXISTS channels (code TEXT PRIMARY KEY, channel_id TEXT)''')
+cursor.execute('''CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY)''')
+conn.commit()
+
+# 2. Phir loop lagakar saari Owner IDs add kar
+for owner_id in OWNER_IDS:
+    cursor.execute("INSERT OR IGNORE INTO admins (user_id) VALUES (?)", (owner_id,))
+conn.commit()
+for owner_id in OWNER_IDS:
+    cursor.execute("INSERT OR IGNORE INTO admins (user_id) VALUES (?)", (owner_id,))
+conn.commit()
 cursor.execute('''CREATE TABLE IF NOT EXISTS admins (user_id INTEGER PRIMARY KEY)''')
 cursor.execute('''CREATE TABLE IF NOT EXISTS channels (code TEXT PRIMARY KEY, channel_id TEXT)''')
 cursor.execute('''CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY)''')
